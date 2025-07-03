@@ -4,7 +4,7 @@
     "license": "Apache-2.0",
     "require": {
         "php": ">=7.2.0",
-    	"tp5-container": "*"
+    	"ibibicloud/tp5-container": "*"
     },   
     "autoload": {
         "psr-4": {
