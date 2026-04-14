@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ibibicloud;
 
 /**
@@ -13,14 +15,14 @@ class HttpClient
      * 用于检测目标服务器是否过载、下线或崩溃
      * @var int
      */
-    private $connectTimeout = 5;
+    private int $connectTimeout = 5;
 
     /**
      * 响应超时时间（秒）
      * 接收缓冲完成前需要等待的时间，大文件请求应适当调高
      * @var int
      */
-    private $timeout = 30;
+    private int $timeout = 30;
 
     /**
      * 发送HTTP请求的核心方法
@@ -41,7 +43,14 @@ class HttpClient
      * @throws \InvalidArgumentException 当使用不支持的HTTP方法时抛出
      * @throws \RuntimeException 当cURL请求失败时抛出
      */
-    public function sendRequest($method, $url, $data = null, $header = [], $includeResponseHeaders = false, $followLocation = false, $maxRedirs = 5)
+    public function sendRequest(
+        string $method,
+        string $url,
+        $data = null,
+        array $header = [],
+        bool $includeResponseHeaders = false,
+        bool $followLocation = false,
+        int $maxRedirs = 5): array
     {
         // 初始化CURL会话
         $ch = curl_init();
@@ -104,7 +113,7 @@ class HttpClient
             foreach ($headerLines as $line) {
                 if ( empty($line) ) continue;
                 if ( strpos($line, ': ') !== false ) {
-                    list($key, $value) = explode(': ', $line, 2);
+                    [$key, $value] = explode(': ', $line, 2);
                     $headers[$key] = $value;
                 } else {
                     // 状态行
@@ -123,7 +132,14 @@ class HttpClient
         return $response;
     }
 
-    public function get($url, $queryParams = [], $headers = [], $includeResponseHeaders = false, $followLocation = false, $maxRedirs = 5)
+    public function get(
+        string $url,
+        array $queryParams = [],
+        array $headers = [],
+        bool $includeResponseHeaders = false,
+        bool $followLocation = false,
+        int $maxRedirs = 5
+    ): array
     {
         // 构建URL查询参数
         if ( !empty($queryParams) ) {
@@ -133,22 +149,43 @@ class HttpClient
         return $this->sendRequest('GET', $url, null, $headers, $includeResponseHeaders, $followLocation, $maxRedirs);
     }
 
-    public function post($url, $data = null, $headers = [], $includeResponseHeaders = false, $followLocation = false, $maxRedirs = 5)
+    public function post(
+        string $url,
+        $data = null,
+        array $headers = [],
+        bool $includeResponseHeaders = false,
+        bool $followLocation = false,
+        int $maxRedirs = 5
+    ) : array
     {
         return $this->sendRequest('POST', $url, $data, $headers, $includeResponseHeaders, $followLocation, $maxRedirs);
     }
 
-    public function put($url, $data = null, $headers = [], $includeResponseHeaders = false, $followLocation = false, $maxRedirs = 5)
+    public function put(
+        string $url,
+        $data = null,
+        array $headers = [],
+        bool $includeResponseHeaders = false,
+        bool $followLocation = false,
+        int $maxRedirs = 5
+    ): array
     {
         return $this->sendRequest('PUT', $url, $data, $headers, $includeResponseHeaders, $followLocation, $maxRedirs);
     }
 
-    public function delete($url, $data = null, $headers = [], $includeResponseHeaders = false, $followLocation = false, $maxRedirs = 5)
+    public function delete(
+        string $url,
+        $data = null,
+        array $headers = [],
+        bool $includeResponseHeaders = false,
+        bool $followLocation = false,
+        int $maxRedirs = 5
+    ): array
     {
         return $this->sendRequest('DELETE', $url, $data, $headers, $includeResponseHeaders, $followLocation, $maxRedirs);
     }
 
-    private function setRequestMethod($ch, $method, $data)
+    private function setRequestMethod($ch, string $method, $data): void
     {
         $method = strtoupper($method);
         switch ( $method ) {

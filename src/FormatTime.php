@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ibibicloud;
 
 // 日期格式化
 class FormatTime
 {
     // 获取 当前月月初 到 下月初 的时间戳范围（毫秒）
-    public function getCurrentMonthTimestampRange($isMsSecond = false)
+    public function getCurrentMonthTimestampRange(bool $isMsSecond = false): int
     {
         // 当前月的第一天 00:00:00
         $startDate = strtotime('first day of this month');
